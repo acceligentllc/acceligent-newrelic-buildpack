@@ -37,7 +37,6 @@ RELEASE_URL="$BASE_URL/v${VERSION}/newrelic-cli_${VERSION}_${OS}_${MACHINE}.tar.
 curl -sL --retry 3 "${RELEASE_URL}" | tar -xz
 
 chmod +x newrelic
-mv newrelic /usr/local/bin/newrelic
 
 ./newrelic install -n node-agent-installer
 ./newrelic install -n postgres-open-source-integration
