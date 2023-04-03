@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# bin/compile <build-dir> <cache-dir>
+# bin/compile <build-dir> <cache-dir> <env_dir>
 
 set -o errexit
 
@@ -37,6 +37,9 @@ RELEASE_URL="$BASE_URL/v${VERSION}/newrelic-cli_${VERSION}_${OS}_${MACHINE}.tar.
 curl -sL --retry 3 "${RELEASE_URL}" | tar -xz
 
 chmod +x newrelic
+
+export "NEW_RELIC_ACCOUNT_ID=$(cat $3/NEW_RELIC_ACCOUNT_ID)"
+export "NEW_RELIC_API_KEY=$(cat $3/NEW_RELIC_API_KEY)"
 
 ./newrelic install -n node-agent-installer
 ./newrelic install -n postgres-open-source-integration
