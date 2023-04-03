@@ -13,7 +13,7 @@ VERSION=$(curl -sL $LATEST_URL | cut -d "v" -f 2)
 OS=`uname`
 ARCH=`uname -m`
 
-if [ $OS != "Linux" ] && [ $OS != "Darwin" ]
+if [ $OS != "Linux" ] && [ $OS != "Darwin" ]; then
     echo "This operating system is not supported. The supported operating systems are Linux and Darwin"
     exit 1
 fi
