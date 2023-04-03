@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+set -o errexit
+
+echo "Starting installation."
+
+# Determine release filename. This can be expanded with CPU arch in the future.
+
+BASE_URL="https://download.newrelic.com/install/newrelic-cli"
+LATEST_URL="$BASE_URL/currentVersion.txt"
+VERSION=$(curl -sL $LATEST_URL | cut -d "v" -f 2)
+OS=`uname`
+ARCH=`uname -m`
+
+if [ $OS != "Linux" ] && [ $OS != "Darwin" ]
+    echo "This operating system is not supported. The supported operating systems are Linux and Darwin"
+    exit 1
+fi
+
+if [ $ARCH == "x86_64" ]; then
+    MACHINE="x86_64"
+elif [ $ARCH == "aarch64" ] || [ $ARCH == "arm64" ]; then
+    MACHINE="arm64"
+elif [ $ARCH == "armv7l" ]; then
+    MACHINE="armv7"
+else
+    echo "This machine architecture is not supported. The supported architectures are x86_64, aarch64, armv7."
+    exit 1
+fi
+
+echo "Installing New Relic CLI v${VERSION}"
+
+RELEASE_URL="$BASE_URL/v${VERSION}/newrelic-cli_${VERSION}_${OS}_${MACHINE}.tar.gz"
+
+# Download & unpack the release tarball.
+curl -sL --retry 3 "${RELEASE_URL}" | tar -xz
+
+chmod +x newrelic
+mv newrelic /usr/local/bin/newrelic
+
+./newrelic install -n node-agent-installer
+./newrelic install -n postgres-open-source-integration
+./newrelic install -n mongodb-open-source-integration
+./newrelic install -n redis-open-source-integration
+./newrelic install -n rabbitmq-open-source-integration
